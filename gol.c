@@ -159,8 +159,6 @@ static void universe_tick()
 {
     char new[config.rows * config.cols];
     int y, x;
-    int yy, xx;
-    int spawn_cell;
     int cell_state;
 
     for (y = 0; y < config.rows; y++) {
