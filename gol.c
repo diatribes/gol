@@ -8,7 +8,10 @@
 #include "sleep_ms.h"
 #include "isnumeric.h"
 
-#define ANSI_COLOR_RED      "\x1b[31m"
+
+#define ANSI_COLOR_INVERT   "\x1b[7m"
+#define ANSI_COLOR_WHITE    "\x1b[107m"
+#define ANSI_COLOR_RED      "\x1b[41m"
 #define ANSI_COLOR_GREEN    "\x1b[32m"
 #define ANSI_COLOR_YELLOW   "\x1b[33m"
 #define ANSI_COLOR_BLUE     "\x1b[34m"
@@ -112,10 +115,11 @@ static void cell_print_plain(int x, int y)
         print(config.draw_ghosts ? "." : " ");
         break;
     case cell_state_alive:
-        print("#");
+        print(ANSI_COLOR_RED " ");
+        print(ANSI_COLOR_WHITE);
         break;
     case cell_state_none:
-        print(" ");
+        print(ANSI_COLOR_WHITE " ");
         break;
     }
 }
@@ -259,6 +263,7 @@ int main(int argc, char *argv[])
     signal(SIGINT, handle_signal);
     signal(SIGTERM, handle_signal);
     universe_init();
+    print(ANSI_COLOR_RESET);
     print(ANSI_TERM_CLEAR);
 
     if (config.generate_terrain) {
@@ -276,7 +281,7 @@ int main(int argc, char *argv[])
 
     while (!done) {
         universe_print();
-        sleep_ms(50);
+        sleep_ms(100);
         universe_tick();
     }
 
