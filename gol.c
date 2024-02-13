@@ -14,7 +14,7 @@
 #define ANSI_COLOR_RED      "\x1b[41m"
 #define ANSI_COLOR_GREEN    "\x1b[32m"
 #define ANSI_COLOR_YELLOW   "\x1b[33m"
-#define ANSI_COLOR_BLUE     "\x1b[34m"
+#define ANSI_COLOR_BLUE     "\x1b[44m"
 #define ANSI_COLOR_MAGENTA  "\x1b[35m"
 #define ANSI_COLOR_CYAN     "\x1b[36m"
 #define ANSI_COLOR_RESET    "\x1b[0m"
@@ -34,8 +34,7 @@ struct config {
     int rows;
     int cols;
     int generate_terrain;
-    int draw_ghosts;
-} config = { 0, default_rows, default_cols, 0, 0 };
+} config = { 0, default_rows, default_cols, 0 };
 
 void (*cell_print)(int, int);
 char *universe = NULL;
@@ -46,7 +45,6 @@ static void print_usage()
     fprintf(stderr,
             "Usage: gol [OPTIONS]\n"
             "   -t     generate terrain\n"
-            "   -g     draw ghosts (dead cells), not applicable when -t is specified.\n"
             "   -r N   set number of rows to N.\n"
             "   -c N   set number of columns to N.\n");
     fprintf(stderr, "e.g., gol -t -r 20 -c 30\n");
@@ -112,7 +110,7 @@ static void cell_print_plain(int x, int y)
 {
     switch (cell_get(x, y)) {
     case cell_state_dead:
-        print(config.draw_ghosts ? "." : " ");
+        print(ANSI_COLOR_WHITE " ");
         break;
     case cell_state_alive:
         print(ANSI_COLOR_RED " ");
@@ -203,9 +201,6 @@ static void set_options(int argc, char **argv)
         case 't':
             config.generate_terrain = 1;
             cell_print = cell_print_terrain;
-            break;
-        case 'g':
-            config.draw_ghosts = 1;
             break;
         case 'r':
             if (isnumeric(optarg)) {
